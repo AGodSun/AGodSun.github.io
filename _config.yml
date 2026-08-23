@@ -14,7 +14,7 @@ timezone: ''
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://agodsun.github.io/
+url: 
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -114,3 +114,11 @@ live2d:
     height: 500
   mobile:
     show: false  #是否在手机进行显示
+
+footer:
+  beian:
+    enable: true
+    icp_text: 沪ICP备XXXXXXXX号
+    police_text:
+    police_code:
+    police_icon:
