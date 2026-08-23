@@ -1,0 +1,815 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="">
+  <meta name="keywords" content="想开了">
+  
+    <meta name="description" content="解决的问题：123451.将组件的连接封装起来，对外只提供接口方法调用，具体实现用代理封装，调用变简单2.自动处理Prompt模板，使用@SystemMessage @UserMessage注解、&#123;&#123;&#125;&#125;占位符来拼装完整的Prompt3.可配置自动管理聊天记忆4.自动处理Tool的调用5.自动处理返回的结构化  基础用法:1.一个接口：123456publi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3.Ai Service">
+<meta property="og:url" content="https://agodsun.github.io/2026/08/23/langchain4j/4.AiService/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="解决的问题：123451.将组件的连接封装起来，对外只提供接口方法调用，具体实现用代理封装，调用变简单2.自动处理Prompt模板，使用@SystemMessage @UserMessage注解、&#123;&#123;&#125;&#125;占位符来拼装完整的Prompt3.可配置自动管理聊天记忆4.自动处理Tool的调用5.自动处理返回的结构化  基础用法:1.一个接口：123456publi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-23T08:01:06.370Z">
+<meta property="article:modified_time" content="2026-08-23T08:01:06.370Z">
+<meta property="article:tag" content="想开了">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>3.Ai Service - Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"agodsun.github.io","root":"/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="3.Ai Service"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-23 08:01" pubdate>
+          2026年8月23日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          73 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">3.Ai Service</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="解决的问题："><a href="#解决的问题：" class="headerlink" title="解决的问题："></a>解决的问题：</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-number">1.</span>将组件的连接封装起来，对外只提供接口方法调用，具体实现用代理封装，调用变简单<br><span class="hljs-number">2.</span>自动处理Prompt模板，使用<span class="hljs-variable">@SystemMessage</span> <span class="hljs-variable">@UserMessage</span>注解、&#123;&#123;&#125;&#125;占位符来拼装完整的Prompt<br><span class="hljs-number">3.</span>可配置自动管理聊天记忆<br><span class="hljs-number">4.</span>自动处理Tool的调用<br><span class="hljs-number">5.</span>自动处理返回的结构化<br></code></pre></td></tr></table></figure>
+
+<h2 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法:"></a>基础用法:</h2><h3 id="1-一个接口："><a href="#1-一个接口：" class="headerlink" title="1.一个接口："></a>1.一个接口：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">AiServiceDemo</span> &#123;<br>    <span class="hljs-meta">@SystemMessage(&quot;你是一个旅游小助手&quot;)</span> <span class="hljs-comment">//系统Prompt</span><br><span class="hljs-comment">//    @SystemMessage(fromResource = &quot;system-prompt.txt&quot;) //从resources下的system-prompt.txt加载消息模板</span><br>    <span class="hljs-meta">@UserMessage(&quot;你好，我是张三，这是我的问题：&#123;&#123;question&#125;&#125;&quot;)</span> <span class="hljs-comment">//userPrompt模板</span><br>    String <span class="hljs-title function_">chat</span><span class="hljs-params">(<span class="hljs-meta">@V(&quot;question&quot;)</span> String userMessage)</span>; <span class="hljs-comment">//使用@V指定占位符的变量名</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="2-简单使用："><a href="#2-简单使用：" class="headerlink" title="2.简单使用："></a>2.简单使用：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">OpenAiChatModel</span> <span class="hljs-variable">chatModel</span> <span class="hljs-operator">=</span> OpenAiChatModel.builder()<br>        .apiKey(System.getenv(<span class="hljs-string">&quot;AI_KEY&quot;</span>))<br>        .modelName(<span class="hljs-string">&quot;qwen-plus&quot;</span>)<br>        .baseUrl(<span class="hljs-string">&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span>)<br>        .build();<br><span class="hljs-comment">//简单封装       </span><br><span class="hljs-comment">//注意：会将AiServiceDemo接口内的所有方法都做一次代理</span><br><span class="hljs-type">AiServiceDemo</span> <span class="hljs-variable">service</span> <span class="hljs-operator">=</span> AiServices.create(AiServiceDemo.class, chatModel);<br><span class="hljs-type">String</span> <span class="hljs-variable">response</span> <span class="hljs-operator">=</span> service.chat(<span class="hljs-string">&quot;1+1=几？&quot;</span>);<br>System.out.println(response);<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-1-AiServices的另一种创建方式："><a href="#2-1-AiServices的另一种创建方式：" class="headerlink" title="2.1.AiServices的另一种创建方式："></a>2.1.AiServices的另一种创建方式：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">AiServiceDemo</span> <span class="hljs-variable">service</span> <span class="hljs-operator">=</span> AiServices.builder(AiServiceDemo.class)<br>                .chatModel(chatModel)<br>                .systemMessageProvider(chatMemoryId -&gt; <span class="hljs-string">&quot;你是一个机票小助手&quot;</span>)<span class="hljs-comment">//可手动注入systemPrompt</span><br>                .build();<br></code></pre></td></tr></table></figure>
+
+<h2 id="不同的响应"><a href="#不同的响应" class="headerlink" title="不同的响应"></a>不同的响应</h2><h3 id="1-可获取除内容外的原信息"><a href="#1-可获取除内容外的原信息" class="headerlink" title="1.可获取除内容外的原信息"></a>1.可获取除内容外的原信息</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//使用Result包裹响应，可得到除了响应内容以外的一些元信息</span><br>Result&lt;List&lt;String&gt;&gt; <span class="hljs-title function_">chat2</span><span class="hljs-params">(String userMessage)</span>;<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java">Result&lt;List&lt;String&gt;&gt; response = service.chat2(<span class="hljs-string">&quot;你好&quot;</span>);<br><br><span class="hljs-comment">//响应内容</span><br>System.out.println(response.content());<br><br><span class="hljs-comment">//ai服务调用期间消耗的token总数</span><br>System.out.println(response.tokenUsage());<br><span class="hljs-comment">//在 RAG 检索期间检索到的 Content</span><br>System.out.println(response.sources());<br><span class="hljs-comment">//AI 服务调用过程中执行过的工具记录</span><br>System.out.println(response.toolExecutions());<br><span class="hljs-comment">//模型这次生成结束的原因</span><br>System.out.println(response.finishReason());<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-自定义Java对象响应"><a href="#2-自定义Java对象响应" class="headerlink" title="2.自定义Java对象响应"></a>2.自定义Java对象响应</h3><h4 id="1-接口层："><a href="#1-接口层：" class="headerlink" title="1.接口层："></a>1.接口层：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//!!!返回类型信息会在请求时携带给llm，如下</span><br><span class="hljs-comment">//You must answer strictly in the following JSON format:</span><br><span class="hljs-comment">// &#123;\n\&quot;name\&quot;: (type: string),\n\&quot;age\&quot;: (type: integer),\n\&quot;birthDate\&quot;: (type: date string (2023-12-31)),\n\&quot;address\&quot;:</span><br><span class="hljs-comment">// (type: com.demo.AiServiceDemo$Person$Address: &#123;\n\&quot;street\&quot;: (type: string),\n\&quot;streetNumber\&quot;: (type: integer),\n\&quot;city\&quot;: (type: string)\n&#125;)\n&#125;&quot;</span><br><br><span class="hljs-comment">//响应时为json数据，如下</span><br><span class="hljs-comment">//&quot;content&quot;:&quot;&#123;\n  \&quot;name\&quot;: \&quot;小明\&quot;,\n  \&quot;age\&quot;: 20,\n  \&quot;birthDate\&quot;: \&quot;2006-04-03\&quot;,\n  \&quot;address\&quot;: &#123;\n    \&quot;street\&quot;: \&quot;山村街道\&quot;,\n    \&quot;streetNumber\&quot;: 200,\n    \&quot;city\&quot;: \&quot;北京市\&quot;\n  &#125;\n&#125;&quot;,&quot;role&quot;:&quot;assistant&quot;&#125;</span><br><span class="hljs-meta">@UserMessage(&quot;帮我提取一下用户信息为用户信息对象，信息如下&#123;&#123;it&#125;&#125;&quot;)</span><br>Person <span class="hljs-title function_">extratPersonInfo</span><span class="hljs-params">(String userInfoStr)</span>;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-响应对象层："><a href="#2-响应对象层：" class="headerlink" title="2.响应对象层："></a>2.响应对象层：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Data</span><br><span class="hljs-meta">@Description(&quot;一个人的信息&quot;)</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>&#123;<br>    String name;<br>    <span class="hljs-type">int</span> age;<br>    LocalDate birthDate;<br>    Address address;<br><br>    <span class="hljs-meta">@Data</span><br>    <span class="hljs-meta">@Description(&quot;地址信息&quot;)</span><br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Address</span>&#123;<br>        String street;<br>        Integer streetNumber;<br>        String city;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-对话层："><a href="#3-对话层：" class="headerlink" title="3.对话层："></a>3.对话层：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">OpenAiChatModel</span> <span class="hljs-variable">chatModel</span> <span class="hljs-operator">=</span> OpenAiChatModel.builder()<br>        .apiKey(System.getenv(<span class="hljs-string">&quot;AI_KEY&quot;</span>))<br>        .baseUrl(<span class="hljs-string">&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span>)<br>        .modelName(<span class="hljs-string">&quot;qwen-plus&quot;</span>)<br>        .logRequests(<span class="hljs-literal">true</span>)<br>        .logResponses(<span class="hljs-literal">true</span>)<br>        .build();<br><br><span class="hljs-type">AiServiceDemo</span> <span class="hljs-variable">service</span> <span class="hljs-operator">=</span> AiServices.builder(AiServiceDemo.class)<br>        .chatModel(chatModel)<br>        .systemMessageProvider(chatMemoryId -&gt; <span class="hljs-string">&quot;你是一个提取信息小助手&quot;</span>)<br>        .build();<br><br><span class="hljs-type">String</span> <span class="hljs-variable">personInfo</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        小明今年20岁，出生于2006年4月3日，住在北京市山村街道200号</span><br><span class="hljs-string">        &quot;&quot;&quot;</span>;<br><br><span class="hljs-comment">//自动将响应解析为Java对象</span><br>AiServiceDemo.<span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> service.extratPersonInfo(personInfo);<br>System.out.println(person);<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-流式处理响应"><a href="#3-流式处理响应" class="headerlink" title="3.流式处理响应"></a>3.流式处理响应</h3><h3 id="方式1："><a href="#方式1：" class="headerlink" title="方式1："></a>方式1：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@SystemMessage(&quot;你是一个旅行规划小助手&quot;)</span><br>TokenStream <span class="hljs-title function_">streamChat</span><span class="hljs-params">(String userMessage)</span>; <span class="hljs-comment">//返回类型为：TokenStream</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//OpenAiStreamingChatModel为流式处理ChatModel</span><br><span class="hljs-type">OpenAiStreamingChatModel</span> <span class="hljs-variable">streamingChatModel</span> <span class="hljs-operator">=</span> OpenAiStreamingChatModel.builder()<br>        .apiKey(System.getenv(<span class="hljs-string">&quot;AI_KEY&quot;</span>))<br>        .modelName(<span class="hljs-string">&quot;qwen-plus&quot;</span>)<br>        .baseUrl(<span class="hljs-string">&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span>)<br>        .build();<br><br><span class="hljs-type">CountDownLatch</span> <span class="hljs-variable">latch</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CountDownLatch</span>(<span class="hljs-number">1</span>);<br><br><span class="hljs-type">AiServiceDemo</span> <span class="hljs-variable">service</span> <span class="hljs-operator">=</span> AiServices.create(AiServiceDemo.class, streamingChatModel);<br><span class="hljs-type">TokenStream</span> <span class="hljs-variable">tokenStream</span> <span class="hljs-operator">=</span> service.streamChat(<span class="hljs-string">&quot;你好&quot;</span>);<br>tokenStream.onPartialResponse(System.out::print) <span class="hljs-comment">// 模型流式生成部分文本片段时触发</span><br>        .onCompleteResponse(r-&gt; &#123;System.out.println(<span class="hljs-string">&quot;已完成&quot;</span>); latch.countDown();&#125;) <span class="hljs-comment">// 本次模型响应完整结束后触发，可拿到完整 ChatResponse</span><br>        .onError(e-&gt; &#123;e.printStackTrace();latch.countDown();&#125;) <span class="hljs-comment">//在报错时触发的函数</span><br>        .onRetrieved(System.out::println) <span class="hljs-comment">// RAG 检索完成后触发，拿到本次从知识库召回的 Content 列表/片段</span><br>        .onToolExecuted(System.out::println)  <span class="hljs-comment">//工具执行完成后触发，拿到本次工具调用的执行记录，如工具名、入参、返回结果</span><br>        .start();<br><br>latch.await();<span class="hljs-comment">//阻塞代码，防止程序在响应前终止</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="方式2："><a href="#方式2：" class="headerlink" title="方式2："></a>方式2：</h3><h5 id="需引入依赖："><a href="#需引入依赖：" class="headerlink" title="需引入依赖："></a>需引入依赖：</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>dev.langchain4j<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>langchain4j-reactor<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.12.2-beta22<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//返回Flux&lt;String&gt;类型</span><br><span class="hljs-meta">@SystemMessage(&quot;你是一个旅行规划小助手&quot;)</span><br>Flux&lt;String&gt; <span class="hljs-title function_">fluxChat</span><span class="hljs-params">(String userMessage)</span>;<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">OpenAiStreamingChatModel</span> <span class="hljs-variable">streamingChatModel</span> <span class="hljs-operator">=</span> OpenAiStreamingChatModel.builder()<br>        .apiKey(System.getenv(<span class="hljs-string">&quot;AI_KEY&quot;</span>))<br>        .modelName(<span class="hljs-string">&quot;qwen-plus&quot;</span>)<br>        .baseUrl(<span class="hljs-string">&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span>)<br>        .build();<br><span class="hljs-type">AiServiceDemo</span> <span class="hljs-variable">service</span> <span class="hljs-operator">=</span> AiServices.create(AiServiceDemo.class, streamingChatModel);<br><span class="hljs-comment">//流式处理方式2</span><br>Flux&lt;String&gt; fluxResponse = service.fluxChat(<span class="hljs-string">&quot;你好&quot;</span>);<br>fluxResponse.doOnNext(System.out::print) <span class="hljs-comment">// 模型流式生成部分文本片段时触发</span><br>        .doOnComplete(() -&gt; System.out.println(<span class="hljs-string">&quot;\n已完成&quot;</span>)) <span class="hljs-comment">// 本次模型响应完整结束后触发，可拿到完整 ChatResponse</span><br>        .doOnError(Throwable::printStackTrace)  <span class="hljs-comment">//在报错时触发的函数</span><br>        .blockLast(); <span class="hljs-comment">//阻塞住</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="对话记忆"><a href="#对话记忆" class="headerlink" title="对话记忆"></a>对话记忆</h2><h3 id="简要知识："><a href="#简要知识：" class="headerlink" title="简要知识："></a>简要知识：</h3><h4 id="记忆与历史的区别："><a href="#记忆与历史的区别：" class="headerlink" title="记忆与历史的区别："></a>记忆与历史的区别：</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql">历史：真正的完整对话记录，保存用户与ai的完整交互内容，可用于审计、回放、问题追踪。<br>记忆：从历史记录、用户画像、业务数据或 RAG 检索结果中提炼<span class="hljs-operator">/</span>筛选出的上下文信息，用于在当前对话中帮助模型理解用户意图和背景。<br></code></pre></td></tr></table></figure>
+
+<h4 id="淘汰策略"><a href="#淘汰策略" class="headerlink" title="淘汰策略"></a>淘汰策略</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql">原因：<br> llm模型的对话上下文窗口大小有限，过大的上下文无法处理；<br> 太长的上下文会导致延迟增加（控制延迟）；<br> 一些无用的上下文会浪费token（控制成本）<br> <br>langchain4j自带的实现：<br> <span class="hljs-number">1.</span>MessageWindowChatMemory： 以消息数量为限制，保留最近的N条消息；特点：适合简单场景，实现直观，但不能精确控制 token 数量<br> <span class="hljs-number">2.</span>TokenWindowChatMemory：以token数量为限制，在 token 上限内尽量保留最近的完整消息，消息通常是不可分割的，如果加入某条消息后超过 token 上限，会淘汰更早的消息，而不是把某条消息截断成一半。<br></code></pre></td></tr></table></figure>
+
+<h4 id="消息持久化（历史对话）"><a href="#消息持久化（历史对话）" class="headerlink" title="消息持久化（历史对话）"></a>消息持久化（历史对话）</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql">默认情况下，ChatMemory实现在内存中存储ChatMessage<br><br>自定义：实现ChatMemoryStore做自定义持久化<br></code></pre></td></tr></table></figure>
+
+<h3 id="自定义历史对话持久化"><a href="#自定义历史对话持久化" class="headerlink" title="自定义历史对话持久化"></a>自定义历史对话持久化</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ChatMemoryDemo</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ChatMemoryStore</span> &#123;<br><br>    <span class="hljs-comment">//目前是demo，真实场景可改为MySQL/PgSQL存储</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Map&lt;Object,List&lt;ChatMessage&gt;&gt; testMsgStore = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcurrentHashMap</span>&lt;&gt;();<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> List&lt;ChatMessage&gt; <span class="hljs-title function_">getMessages</span><span class="hljs-params">(Object memoryId)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;获取历史对话...&quot;</span>);<br>        List&lt;ChatMessage&gt; chatMessages = testMsgStore.get(memoryId);<br>        <span class="hljs-keyword">return</span> chatMessages == <span class="hljs-literal">null</span> || chatMessages.isEmpty() ? List.of() : chatMessages;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">updateMessages</span><span class="hljs-params">(Object memoryId, List&lt;ChatMessage&gt; list)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;更新历史对话...&quot;</span>);<br>        testMsgStore.put(memoryId, list);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">deleteMessages</span><span class="hljs-params">(Object memoryId)</span> &#123;<br>        testMsgStore.remove(memoryId);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="1-直接使用Langchain4j官方Memory"><a href="#1-直接使用Langchain4j官方Memory" class="headerlink" title="1.直接使用Langchain4j官方Memory"></a>1.直接使用Langchain4j官方Memory</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//方法使用memoryId入参</span><br>String <span class="hljs-title function_">memoryChat</span><span class="hljs-params">(<span class="hljs-meta">@MemoryId</span> <span class="hljs-type">int</span> memoryId,<span class="hljs-meta">@UserMessage</span> String userMessage)</span>;<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">AiServiceDemo</span> <span class="hljs-variable">service</span> <span class="hljs-operator">=</span> AiServices.builder(AiServiceDemo.class)<br>        .chatModel(chatModel)<br>        <span class="hljs-comment">//chatMemoryProvider需要配合带有memoryId入参的chat方法</span><br>        .chatMemoryProvider(memoryId -&gt; MessageWindowChatMemory.withMaxMessages(<span class="hljs-number">10</span>)) <br>        .build();<br><br><span class="hljs-comment">//验证：</span><br><span class="hljs-type">String</span> <span class="hljs-variable">response1</span> <span class="hljs-operator">=</span> service.memoryChat(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;你好，你现在是张三&quot;</span>);<br>System.out.println(<span class="hljs-string">&quot;回答1：&quot;</span>+response1);<br>System.out.println(<span class="hljs-string">&quot;-------------------------------------------&quot;</span>);<br><span class="hljs-type">String</span> <span class="hljs-variable">response2</span> <span class="hljs-operator">=</span> service.memoryChat(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;你好，你是谁&quot;</span>);<br>System.out.println(<span class="hljs-string">&quot;回答2：&quot;</span>+response2);<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-使用自定义持久化（共享会话记忆版）"><a href="#2-使用自定义持久化（共享会话记忆版）" class="headerlink" title="2.使用自定义持久化（共享会话记忆版）"></a>2.使用自定义持久化（共享会话记忆版）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//使用不带memoryId入参的会话方法</span><br>String <span class="hljs-title function_">memoryChat2</span><span class="hljs-params">(String userMessage)</span>;<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//使用MessageWindowChatMemory包装自定义持久memory（共享会话记忆）</span><br><span class="hljs-type">ChatMemory</span> <span class="hljs-variable">chatMemory</span> <span class="hljs-operator">=</span> MessageWindowChatMemory.builder()<br>        .maxMessages(<span class="hljs-number">10</span>)<br>        <span class="hljs-comment">//自定义持久化历史记录</span><br>        .chatMemoryStore(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ChatMemoryDemo</span>()) <br>        .build();<br><br><span class="hljs-type">AiServiceDemo</span> <span class="hljs-variable">service</span> <span class="hljs-operator">=</span> AiServices.builder(AiServiceDemo.class)<br>        .chatModel(chatModel)<br>        <span class="hljs-comment">//共享会话记忆</span><br>        <span class="hljs-comment">//chatMemory配合不带memoryId的chat方法，只能共享会话记忆</span><br>        .chatMemory(chatMemory)<br>        .build();<br><br><br><span class="hljs-comment">//验证：</span><br><span class="hljs-type">String</span> <span class="hljs-variable">response1</span> <span class="hljs-operator">=</span> service.memoryChat2(<span class="hljs-string">&quot;你好，你现在是张三&quot;</span>);<br>System.out.println(<span class="hljs-string">&quot;回答1：&quot;</span>+response1);<br>System.out.println(<span class="hljs-string">&quot;-------------------------------------------&quot;</span>);<br><span class="hljs-type">String</span> <span class="hljs-variable">response2</span> <span class="hljs-operator">=</span> service.memoryChat2(<span class="hljs-string">&quot;你好，你是谁&quot;</span>);<br>System.out.println(<span class="hljs-string">&quot;回答2：&quot;</span>+response2);<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-使用自定义持久化（根据memoryId隔离记忆版）"><a href="#3-使用自定义持久化（根据memoryId隔离记忆版）" class="headerlink" title="3.使用自定义持久化（根据memoryId隔离记忆版）"></a>3.使用自定义持久化（根据memoryId隔离记忆版）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//方法使用memoryId入参</span><br>String <span class="hljs-title function_">memoryChat</span><span class="hljs-params">(<span class="hljs-meta">@MemoryId</span> <span class="hljs-type">int</span> memoryId,<span class="hljs-meta">@UserMessage</span> String userMessage)</span>;<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//包装自定义的持久化</span><br><span class="hljs-type">ChatMemoryProvider</span> <span class="hljs-variable">chatMemoryProvider</span> <span class="hljs-operator">=</span> memoryId -&gt;  MessageWindowChatMemory.builder()<br>                .id(memoryId)<br>                .maxMessages(<span class="hljs-number">10</span>)<br>                .chatMemoryStore(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ChatMemoryDemo</span>())<br>                .build();<br><br><span class="hljs-type">AiServiceDemo</span> <span class="hljs-variable">service</span> <span class="hljs-operator">=</span> AiServices.builder(AiServiceDemo.class)<br>        .chatModel(chatModel)<br>        <span class="hljs-comment">//隔离会话记忆使用</span><br>        .chatMemoryProvider(chatMemoryProvider)<br>        .build();<br><br><span class="hljs-comment">//验证：</span><br><span class="hljs-type">String</span> <span class="hljs-variable">response1</span> <span class="hljs-operator">=</span> service.memoryChat(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;你好，你现在是张三&quot;</span>);<br>System.out.println(<span class="hljs-string">&quot;回答1：&quot;</span>+response1);<br>System.out.println(<span class="hljs-string">&quot;-------------------------------------------&quot;</span>);<br><span class="hljs-type">String</span> <span class="hljs-variable">response2</span> <span class="hljs-operator">=</span> service.memoryChat(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;你好，你是谁&quot;</span>);<br>System.out.println(<span class="hljs-string">&quot;回答2：&quot;</span>+response2);<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>3.Ai Service</div>
+      <div>https://agodsun.github.io/2026/08/23/langchain4j/4.AiService/</div>
+    </div>
+    <div class="license-meta">
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/23/mysql/1.mysql%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/" title="1.mysql两阶段提交">
+                        <span class="hidden-mobile">1.mysql两阶段提交</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

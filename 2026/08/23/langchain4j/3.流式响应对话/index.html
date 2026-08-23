@@ -19,21 +19,21 @@
   <meta name="author" content="">
   <meta name="keywords" content="想开了">
   
-    <meta name="description" content="1eqeqweqweqwe">
+    <meta name="description" content="产生背景1LLM 生成完整回答通常需要一定时间，如果等所有 token 都生成完再返回，用户会感觉首包响应慢、等待时间长。  流式传输特点1234567891011模型每生成一部分 token，就可以立即推送给客户端，客户端可以边接收边展示，无需等待完整回答全部生成。优点： 1. 降低用户感知延迟； 2. 提升交互体验，类似 ChatGPT 逐字输出； 3. 适合长文本生成、代码生成、报告生成等耗">
 <meta property="og:type" content="article">
-<meta property="og:title" content="test_page">
-<meta property="og:url" content="https://agodsun.github.io/2026/04/10/test-page/index.html">
+<meta property="og:title" content="2.流式响应对话">
+<meta property="og:url" content="https://agodsun.github.io/2026/08/23/langchain4j/3.%E6%B5%81%E5%BC%8F%E5%93%8D%E5%BA%94%E5%AF%B9%E8%AF%9D/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="1eqeqweqweqwe">
+<meta property="og:description" content="产生背景1LLM 生成完整回答通常需要一定时间，如果等所有 token 都生成完再返回，用户会感觉首包响应慢、等待时间长。  流式传输特点1234567891011模型每生成一部分 token，就可以立即推送给客户端，客户端可以边接收边展示，无需等待完整回答全部生成。优点： 1. 降低用户感知延迟； 2. 提升交互体验，类似 ChatGPT 逐字输出； 3. 适合长文本生成、代码生成、报告生成等耗">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-04-10T15:24:29.000Z">
-<meta property="article:modified_time" content="2026-04-10T15:24:51.839Z">
+<meta property="article:published_time" content="2026-08-23T08:01:06.369Z">
+<meta property="article:modified_time" content="2026-08-23T08:01:06.370Z">
 <meta property="article:tag" content="想开了">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>test_page - Blog</title>
+  <title>2.流式响应对话 - Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -302,7 +302,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="test_page"></span>
+            <span id="subtitle" data-typed-text="2.流式响应对话"></span>
           
         </div>
 
@@ -313,8 +313,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-04-10 23:24" pubdate>
-          2026年4月10日 晚上
+        <time datetime="2026-08-23 08:01" pubdate>
+          2026年8月23日 早上
         </time>
       </span>
     
@@ -325,7 +325,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          13 字
+          1.5k 字
         
       </span>
     
@@ -336,7 +336,7 @@
         
         
         
-          1 分钟
+          13 分钟
         
       </span>
     
@@ -375,13 +375,20 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">test_page</h1>
+            <h1 id="seo-header">2.流式响应对话</h1>
             
             
               <div class="markdown-body">
                 
-                <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs aaaaaa">eqeqweqweqwe<br></code></pre></td></tr></table></figure>
+                <h3 id="产生背景"><a href="#产生背景" class="headerlink" title="产生背景"></a>产生背景</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">LLM 生成完整回答通常需要一定时间，如果等所有 token 都生成完再返回，用户会感觉首包响应慢、等待时间长。<br></code></pre></td></tr></table></figure>
 
+<h3 id="流式传输特点"><a href="#流式传输特点" class="headerlink" title="流式传输特点"></a>流式传输特点</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sql">模型每生成一部分 token，就可以立即推送给客户端，<br>客户端可以边接收边展示，无需等待完整回答全部生成。<br><br>优点：<br> <span class="hljs-number">1.</span> 降低用户感知延迟；<br> <span class="hljs-number">2.</span> 提升交互体验，类似 ChatGPT 逐字输出；<br> <span class="hljs-number">3.</span> 适合长文本生成、代码生成、报告生成等耗时场景。<br><br> 注意：<br> 流式传输通常不能缩短模型生成完整内容的总耗时，<br> 主要是让用户更早看到部分结果。<br></code></pre></td></tr></table></figure>
+
+<h3 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">OpenAiStreamingChatModel</span> <span class="hljs-variable">streamChatModel</span> <span class="hljs-operator">=</span> OpenAiStreamingChatModel.builder()<br>                .apiKey(System.getenv(<span class="hljs-string">&quot;AI_KEY&quot;</span>))<br>                .modelName(<span class="hljs-string">&quot;qwen-plus&quot;</span>)<br>                .baseUrl(<span class="hljs-string">&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span>)<br>                .build();<br><br><span class="hljs-comment">//防止在发送消息后，还没等到响应程序就退出</span><br><span class="hljs-type">CountDownLatch</span> <span class="hljs-variable">latch</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CountDownLatch</span>(<span class="hljs-number">1</span>);<br><br><span class="hljs-comment">//发送消息，并配置响应相关配置</span><br>streamChatModel.chat(<span class="hljs-string">&quot;你好呀&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">StreamingChatResponseHandler</span>() &#123;<br><br>            <span class="hljs-comment">//在部分token响应时调用</span><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onPartialResponse</span><span class="hljs-params">(String partialResponse)</span> &#123;<br>                System.out.printf(<span class="hljs-string">&quot;part_response：&quot;</span>+partialResponse);<br>                StreamingChatResponseHandler.<span class="hljs-built_in">super</span>.onPartialResponse(partialResponse);<br>            &#125;<br><br>            <span class="hljs-comment">//在全部响应完后调用</span><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCompleteResponse</span><span class="hljs-params">(ChatResponse chatResponse)</span> &#123;<br>                System.out.println(<span class="hljs-string">&quot;响应完成&quot;</span>);<br>            &#125;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onError</span><span class="hljs-params">(Throwable throwable)</span> &#123;<br><br>            &#125;<br>        &#125;);<br><br><span class="hljs-comment">//阻塞程序，防止退出</span><br>latch.await();<br></code></pre></td></tr></table></figure>
+
+<h3 id="简化响应配置"><a href="#简化响应配置" class="headerlink" title="简化响应配置"></a>简化响应配置</h3><h4 id="方式1："><a href="#方式1：" class="headerlink" title="方式1："></a>方式1：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//使用LambdaStreamingResponseHandler.onPartialResponse简化响应配置（只配置在部分响应时的操作）</span><br>streamChatModel.chat(<span class="hljs-string">&quot;Tell me a joke&quot;</span>, onPartialResponse(System.out::print));<br></code></pre></td></tr></table></figure>
+
+<h4 id="方式2："><a href="#方式2：" class="headerlink" title="方式2："></a>方式2：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//使用LambdaStreamingResponseHandler.onPartialResponseAndError（配置在 部分响应 和 错误 时的操作）</span><br>streamChatModel.chat(<span class="hljs-string">&quot;Tell me a joke&quot;</span>, onPartialResponseAndError(System.out::print, Throwable::printStackTrace));<br></code></pre></td></tr></table></figure>
 
                 
               </div>
@@ -399,15 +406,15 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>test_page</div>
-      <div>https://agodsun.github.io/2026/04/10/test-page/</div>
+      <div>2.流式响应对话</div>
+      <div>https://agodsun.github.io/2026/08/23/langchain4j/3.流式响应对话/</div>
     </div>
     <div class="license-meta">
       
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年4月10日</div>
+          <div>2026年8月23日</div>
         </div>
       
       
@@ -439,15 +446,15 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2026/08/23/langchain4j/1.%E5%88%9D%E5%A7%8B%E5%AF%B9%E8%AF%9D/" title="1.初始对话">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">1.初始对话</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
-                    
-                      <a href="/2026/04/10/hello-world/" title="Hello World">
-                        <span class="hidden-mobile">Hello World</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
                     
                   </article>
                 </div>
